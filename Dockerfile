@@ -18,6 +18,7 @@ RUN apt-get update && apt-get -y install \
     mcrypt \
     build-essential \
     tcl8.5 \
+    unzip \
     git
 
 # Download Nginx signing key
@@ -37,6 +38,8 @@ RUN apt-get update && apt-get -y install \
     php5-curl \
     php5-mcrypt \
     php5-gd \
+    php-pear \
+    php5-dev \
     php5-redis \
     ffmpeg\
     php5-xdebug
@@ -73,15 +76,16 @@ RUN php /composer-install/installer && php composer.phar require php-ffmpeg/php-
 RUN mv /composer.phar /usr/local/bin/composer
 
 
-#setup xdebug
 #php inis:
 #/etc/php5/fpm/php.ini
 #/etc/php5/cli/php.ini
-#xdebug.so
-#/usr/lib/php5/20121212/xdebug.so
-COPY xdebug_snippet.txt /xdebug_snippet.txt
-RUN cat /xdebug_snippet.txt >> /etc/php5/cli/php.ini
-RUN cat /xdebug_snippet.txt >> /etc/php5/fpm/php.ini
+
+RUN pecl install mongodb
+
+#add mongodb to extensions
+COPY mongo_snippet.txt /mongo_snippet.txt
+RUN touch /etc/php5/fpm/conf.d/mongo.ini
+RUN cat /mongo_snippet.txt >> /etc/php5/fpm/conf.d/mongo.ini
 
 # Set the current working directory
 WORKDIR /var/www/html
