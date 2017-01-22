@@ -12,4 +12,4 @@ To pull this image from Docker Hub:
 
 To run an instance of this image:
 
-docker run --name mycoolserver -d -P -v /path/to/your/site:/var/www/html -v /path/to/your/videos:/videos -p 8082:80 vignatjevs/nginx-php5-fpm-xdebug-ffmpeg
+	docker run --name mycoolserver -d -P -v /path/to/your/site:/var/www/html -v /path/to/your/videos:/videos -p 8082:80 vignatjevs/nginx-php5-fpm-xdebug-ffmpeg
