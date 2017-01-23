@@ -42,7 +42,9 @@ RUN apt-get update && apt-get -y install \
     php5-dev \
     php5-redis \
     ffmpeg\
-    php5-xdebug
+    php5-xdebug \
+    nodejs \
+    npm
 
 
 # Turn off daemon mode
@@ -88,6 +90,13 @@ RUN pecl install mongo
 COPY mongo_snippet.txt /mongo_snippet.txt
 RUN cat /mongo_snippet.txt >> /etc/php5/fpm/php.ini
 RUN cat /mongo_snippet.txt >> /etc/php5/cli/php.ini
+RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1024M/g' /etc/php5/cli/php.ini
+RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1024M/g' /etc/php5/fpm/php.ini
+RUN sed -i 's/upload_max_filesize = 8M/upload_max_filesize = 1024M/g' /etc/php5/fpm/php.ini
+RUN sed -i 's/upload_max_filesize = 8M/upload_max_filesize = 1024M/g' /etc/php5/cli/php.ini
+
+RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.default
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Set the current working directory
 WORKDIR /var/www/html
