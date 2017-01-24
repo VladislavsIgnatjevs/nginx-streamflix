@@ -94,6 +94,8 @@ RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1024M/g' /etc/php5/
 RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1024M/g' /etc/php5/fpm/php.ini
 RUN sed -i 's/upload_max_filesize = 8M/upload_max_filesize = 1024M/g' /etc/php5/fpm/php.ini
 RUN sed -i 's/upload_max_filesize = 8M/upload_max_filesize = 1024M/g' /etc/php5/cli/php.ini
+RUN sed -i 's/post_max_size = 8M/post_max_size = 1024M/g' /etc/php5/fpm/php.ini
+RUN sed -i 's/post_max_size = 8M/post_max_size = 1024M/g' /etc/php5/cli/php.ini
 
 RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.default
 COPY nginx.conf /etc/nginx/nginx.conf
