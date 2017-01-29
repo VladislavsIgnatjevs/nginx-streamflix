@@ -32,17 +32,7 @@ RUN add-apt-repository ppa:nginx/stable
 RUN add-apt-repository -y ppa:mc3man/trusty-media
 RUN apt-get update && apt-get -y install \
     nginx \
-    php5-fpm \
-    php5-cli \
-    php5-mysql \
-    php5-curl \
-    php5-mcrypt \
-    php5-gd \
-    php-pear \
-    php5-dev \
-    php5-redis \
     ffmpeg\
-    php5-xdebug \
     nodejs \
     npm
 
@@ -52,13 +42,8 @@ RUN apt-get update && apt-get -y install \
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 
 # Backup the default configurations
-RUN cp /etc/php5/fpm/php.ini /etc/php5/fpm/php.ini.original.bak
-RUN mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.original
-
-# Configure PHP settings
-RUN perl -pi -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php5/fpm/php.ini
-RUN perl -pi -e 's/allow_url_fopen = Off/allow_url_fopen = On/g' /etc/php5/fpm/php.ini
-RUN perl -pi -e 's/expose_php = On/expose_php = Off/g' /etc/php5/fpm/php.ini
+#RUN cp /php-fpm/conf/php.ini /php-fpm/conf/php.ini.original.bak
+#RUN mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.original
 
 # Copy default site conf
 COPY default.conf /etc/nginx/sites-available/default
@@ -69,42 +54,14 @@ COPY index.php /var/www/html/index.php
 # Mount volumes
 VOLUME ["/etc/nginx/certs", "/etc/nginx/conf.d", "/var/www/html"]
 
-#install composer and dependancies
-RUN mkdir /composer-install
-RUN wget https://getcomposer.org/installer -P /composer-install
-RUN php /composer-install/installer && php composer.phar require php-ffmpeg/php-ffmpeg
-
-#move composer so it can be accessed as php composer
-RUN mv /composer.phar /usr/local/bin/composer
-
-
-#php inis:
-#/etc/php5/fpm/php.ini
-#/etc/php5/cli/php.ini
-
-#libprce3-dev to fix openssl issue with pect installing mongodb
-RUN apt-get -y install libpcre3-dev
-RUN pecl install mongo
-
-#add mongodb to extensions
-COPY mongo_snippet.txt /mongo_snippet.txt
-RUN cat /mongo_snippet.txt >> /etc/php5/fpm/php.ini
-RUN cat /mongo_snippet.txt >> /etc/php5/cli/php.ini
-RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1024M/g' /etc/php5/cli/php.ini
-RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1024M/g' /etc/php5/fpm/php.ini
-RUN sed -i 's/upload_max_filesize = 8M/upload_max_filesize = 1024M/g' /etc/php5/fpm/php.ini
-RUN sed -i 's/upload_max_filesize = 8M/upload_max_filesize = 1024M/g' /etc/php5/cli/php.ini
-RUN sed -i 's/post_max_size = 8M/post_max_size = 1024M/g' /etc/php5/fpm/php.ini
-RUN sed -i 's/post_max_size = 8M/post_max_size = 1024M/g' /etc/php5/cli/php.ini
-
 RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.default
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Set the current working directory
 WORKDIR /var/www/html
 
-# Boot up Nginx, and PHP5-FPM when container is started
-CMD service php5-fpm start && nginx
+# Boot up Nginx
+CMD service nginx start
 
 # Expose port 80
 EXPOSE 80
