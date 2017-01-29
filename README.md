@@ -1,15 +1,15 @@
-# [Ubuntu 14.04 LTS + Nginx + PHP5-FPM + xdebug + ffmpeg + composer + PHP-FFMpeg ](https://hub.docker.com/r/vignatjevs/nginx-php5-fpm-xdebug-ffmpeg/)
-
-This is my attempt on popular NGINX php5-fpm topic.
-Made with Nginx, PHP5-FPM, and Ubuntu 14.04. Extras include xdebug, composer, ffmpeg (it was removed from official repos for Ubuntu 14.04, but works in this image), PHP-FFMpeg
-
+# [Ubuntu 14.04 LTS + Nginx ](https://hub.docker.com/r/vignatjevs/nginx/)
 
 -----
 
 To pull this image from Docker Hub:
 
-	docker pull vignatjevs/nginx-php5-fpm-xdebug-ffmpeg
+	docker pull vignatjevs/nginx
 
 To run an instance of this image:
 
-	docker run --name mycoolserver -d -P -v /path/to/your/site:/var/www/html -v /path/to/your/videos:/videos -p 8082:80 vignatjevs/nginx-php5-fpm-xdebug-ffmpeg
+	docker run --name streamflix -d -P -v /path/to/your/site:/var/www/html -v /path/to/your/videos:/videos --link link-to-stremflix-php-fpm -p 8082:80 vignatjevs/nginx
+
+in terms of running streamflix project:
+
+docker run --name streamflix  -d -P -p 8082:80 -v $'(pwd)'/streamflix-docker/streamflix:/var/www/html -v $'(pwd)'/streamflix-docker/nginx-videoserver/mp4:/var/www/html/videos/mp4 -v $'(pwd)'/streamflix-docker/nginx-videoserver/mp4pics:/var/www/html/videos/videopics --link streamflix-mysql-server:mysqldb --link mongodb_streamflix:mongodb --link videoserv:videoserver --link streamflix-php-fpm:streamflix-php-fpm -v $'(pwd)'/streamflix-docker/composer:/composer vignatjevs/nginx
